@@ -5,3 +5,20 @@ before_install:
   - docker build -t travis/docker_frontend -f Dockerfile.dev .  
 script:
   - docker run --name docker_fn travis/docker_frontend npm run test -- --coverage
+deploy:
+  provider: elasticbeanstalk
+  region: "us-west-2"
+  # 指定部署应用程序的名称，也是你在后台服务中配置的 APP 名称
+  app: "docker"
+  env: "Docker-env"
+  bucket_name: "elasticbeanstalk-us-west-2-306476627547"
+  # 一般会与创建的 APP 同名
+  bucket_path: "docker"
+  on:
+    branch: master
+  #  AWS_ACCESS_KEY 与 AWS_SECRET_KEY 都定义在 Travis 项目设置页 的
+  # Environment Variables 栏中
+  access_key_id: 
+    secure: "$AWS_ACCESS_KEY"
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"  
